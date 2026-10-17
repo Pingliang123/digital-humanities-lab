@@ -1,0 +1,120 @@
+<div class="topline"><span>LAOZI</span><a href="projects.html#laozi">研究項目 ↗</a></div><header class="page-heading"><p class="eyebrow">老子其人 / 文本分類研究</p><h1>分析方法</h1></header><nav class="research-nav" aria-label="老子研究章節"><a href="laozi-abstract.html">摘要</a><a href="laozi-dataset.html">數據集</a><a href="laozi-methods.html">分析方法</a><a href="laozi-results.html">分析結果</a><a href="laozi-limitations.html">研究限制</a></nav><article class="content research-article">
+<figure><img src="assets/laozi/443ccb526a44a729.png" alt="" loading="lazy"><figcaption>Figure 5 Zhao Mengfu, <em>Tao Te Ching with regular script in small characters,</em> Yuan dynasty, The Palace Museum.</figcaption></figure>
+
+
+
+<p>本研究旨在探索如何從大批量混合文本中識別與老子其人的相關內容，可選擇的方法有BERT模型分類，使用API調用LLM模型進行分類，或使用編程語言按照關鍵詞「老子」進行篩選。</p>
+
+
+
+<p>最終選擇利用預訓練模型Siku_bert，添加使用一千餘條數據訓練的分類器形成BERT模型，對四庫全書中關於老子其人的描述進行自動分類，從而得到數據集。</p>
+
+
+
+<p>這種技術相較於其他兩者的優勢在於以下兩點：</p>
+
+
+
+<ol>
+<li>LLM模型在分類時會產生幻覺，將一些老子相關内容略過，將老子内容判斷爲非老子内容，同時由於處理過程的黑箱，很難對模型進行調整訓練來提高正確率。筆者進行對比後發現BERT模型在篩選過程中錯誤類型則基本為將非老子内容判斷爲老子内容，雖然會造成數據的冗餘，但能夠盡量保留老子相關的内容，并且在進行對比測試之後，BERT模型準確度也與LLM模型相比更高（詳見BLOG）。</li>
+
+
+
+<li>通過關鍵詞進行篩選速度快於其他兩種方法，但在進行數據收集的過程中，筆者發現如果使用老子為關鍵詞，所得到的内容多爲老子道德經的重複内容，不利於進行分析，使用BERT模型則可以在訓練後篩選掉道德經的内容。</li>
+</ol>
+
+
+
+<p>故選擇BERT模型進行訓練分析，目標包括：</p>
+
+
+
+<ol>
+<li>區分文本是否描述老子：從混合文本中識別與老子其人相關的內容。</li>
+
+
+
+<li>分析分類錯誤原因並改進：模型錯誤分類内容與老子内容的關聯以及如何解決。</li>
+
+
+
+<li>構建數據集：借用其他平臺對數據進行二次加工（初步嘗試）。</li>
+</ol>
+
+
+
+<p>在通過人工收集二百條數據之後，使用LLM模型生成獲取了一千條訓練數據。之後使用預訓練模型”SIKU-BERT/sikubert”作爲底層模型，使用一千條數據訓練上部分類器，最終獲得訓練好的BERT模型。</p>
+
+
+
+<p>其中訓練過程中設置如下：</p>
+
+
+<div><pre>
+val_split=0.2,
+epochs=3,
+batch_size=16,
+</pre></div>
+
+
+<p>訓練效果為：</p>
+
+
+
+<figure><img src="assets/laozi/26c55f23bf744a49.png" alt="" loading="lazy"></figure>
+
+
+
+<figure><table><thead><tr><th>Epoch</th><th>Training Loss</th><th>Validation Loss</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th></tr></thead><tbody><tr><td>1</td><td>0.340400</td><td>0.076115</td><td>0.982063</td><td>0.982240</td><td>0.982063</td><td>0.982072</td></tr><tr><td>2</td><td>0.065000</td><td>0.047820</td><td>0.986547</td><td>0.986924</td><td>0.986547</td><td>0.986557</td></tr><tr><td>3</td><td>0.028300</td><td>0.019251</td><td>0.995516</td><td>0.995558</td><td>0.995516</td><td>0.995517</td></tr></tbody></table></figure>
+
+
+
+<p>當調整epoch為4時，從損失來看，四輪訓練損失降低不明顯，故仍進行三輪訓練</p>
+
+
+
+<figure><img src="assets/laozi/1c71e7632fdf7869.png" alt="" loading="lazy"></figure>
+
+
+
+<p>當調整batch為36時，F1未提升，反而下降，在之前訓練中亦使用50、70等數值，效果亦較差。</p>
+
+
+
+<figure><img src="assets/laozi/568cd43df20373b6.png" alt="" loading="lazy"></figure>
+
+
+
+<p>最終保留原有設定，檢驗為：</p>
+
+
+
+<figure><img src="assets/laozi/e838c7db3335e134.png" alt="" loading="lazy"></figure>
+
+
+
+<pre>{&#x27;eval_loss&#x27;: 0.019816875457763672,
+ &#x27;eval_accuracy&#x27;: 0.9954995499549955,
+ &#x27;eval_precision&#x27;: 0.995500642666985,
+ &#x27;eval_recall&#x27;: 0.9954995499549955,
+ &#x27;eval_f1&#x27;: 0.9954992863290504,
+ &#x27;eval_runtime&#x27;: 4.3217,
+ &#x27;eval_samples_per_second&#x27;: 257.074,
+ &#x27;eval_steps_per_second&#x27;: 8.099}</pre>
+
+
+
+<p>由此可看出模型效果較爲不錯，可以對文本進行分類處理。</p>
+
+
+
+<p>為確認模型準確程度，筆者在四庫全書中隨機選擇了一萬字文本，並加入「老子是中國偉大的哲學家」一句充當positive數據，由此對模型的預測功能進行驗證，最終成功篩選出老子一句。結果如下：</p>
+
+
+
+<div><a href="assets/laozi/721f53998ce5c0b5.docx">預測效果測試</a><a href="assets/laozi/721f53998ce5c0b5.docx" download="">下载</a></div>
+
+
+
+<p>最終在進行訓練之後，將四庫全書的全部文本分成不同的TXT文檔，使用BERT模型進行分類，輸出爲TXT文檔。最終得到老子其人的相關描述，並嘗試使用北大吾與點平臺對分類結果進行自動標點與實體標注（由於平臺效率，仍在調整中）。</p>
+</article><p class="caption">遷移來源：<a href="https://dhchina.wordpress.com/%e5%88%86%e6%9e%90%e6%96%b9%e6%b3%95/">原 WordPress 頁面</a> · 原文最後更新：2025-05-07T08:17:06 UTC</p>

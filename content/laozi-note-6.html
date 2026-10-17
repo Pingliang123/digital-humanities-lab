@@ -1,0 +1,76 @@
+<div class="topline"><span>LAOZI</span><a href="projects.html#laozi">研究項目 ↗</a></div><header class="page-heading"><p class="eyebrow">老子其人 / 文本分類研究</p><h1>LLM模型對訓練BERT模型的幫助</h1></header><nav class="research-nav" aria-label="老子研究章節"><a href="laozi-abstract.html">摘要</a><a href="laozi-dataset.html">數據集</a><a href="laozi-methods.html">分析方法</a><a href="laozi-results.html">分析結果</a><a href="laozi-limitations.html">研究限制</a></nav><article class="content research-article">
+<p>本研究在訓練BERT模型的過程中，使用DEEPSEEK與PERPLEXITY等AI工具進行訓練數據的生成來幫助BERT模型訓練。</p>
+
+
+
+<p>由於關於老子其人描述的數據集目前在網絡上不存在，故而只能通過手動收集的方式進行處理，那麽如何收集老子其人的相關資料，就成爲一個問題。筆者首先嘗試保守方法，即在古籍中尋找相關記載，但速度過慢。</p>
+
+
+
+<p>之後筆者嘗試詢問AI工具，在其給出古籍文本後進行驗證，但DEEPSEEK等模型聯網搜索數據的能力有限，在搜索到幾十條數據後，AI的幻覺較多并且重複生成相似内容。</p>
+
+
+
+<p>之後筆者嘗試使用中華經典古籍庫和識典古籍平臺以老子為關鍵詞進行搜索，但搜索后絕大部分的文本則為「老子曰」字樣的道德經内容，由此導致篩選數據的速度緩慢，如果想要通過人工收集數據來訓練模型，所投入的時間會很多，由此便與使用數字技術來高效率處理的初衷本末倒置。</p>
+
+
+
+<p>故筆者嘗試結合手動搜索之後得到的數據與DEEPSEEK與PERPLEXITY等AI工具結合，使其模仿生成訓練數據。</p>
+
+
+
+<p>在手動收集了二百余條數據并以json格式儲存之後，筆者上傳文件至DEEPSEEK等模型，並要求生成與附件相似的數據，最終生成以下類似數據：</p>
+
+
+
+<pre><code>[
+{
+&quot;text&quot;: &quot;老子任周守藏室史时，曾整理夏商周三代的龟甲卜辞，以星象推演历法。&quot;,
+&quot;label&quot;: 1
+},
+{
+&quot;text&quot;: &quot;周景王二十三年，老子观彗星袭月，预言王室将有内乱，次年王子朝果叛乱。&quot;,
+&quot;label&quot;: 1
+},
+{
+&quot;text&quot;: &quot;楚平王建章华台，老子谏以「高台多殃」，后章华台果毁于柏举之战。&quot;,
+&quot;label&quot;: 1
+},
+{
+&quot;text&quot;: &quot;周王室东迁时，老子护送九鼎图至成周，途中遇盗，以德感化贼众。&quot;,
+&quot;label&quot;: 1
+},
+{
+&quot;text&quot;: &quot;老子幼时师从商容，学三皇五帝之书，能倒诵《连山》《归藏》。&quot;,
+&quot;label&quot;: 1
+},
+{
+&quot;text&quot;: &quot;传老子双掌有先天八卦纹，左手乾坎艮震，右手巽离坤兑，掌纹如刻。&quot;,
+&quot;label&quot;: 1
+},
+{
+&quot;text&quot;: &quot;周考王封老子为柱下史时，赐玄圭赤绶，老子悬绶于庭示「功成不居」。&quot;,
+&quot;label&quot;: 1
+},
+{
+&quot;text&quot;: &quot;老子暮年隐于景室山，凿石为室，门徒见其室中常现紫气缭绕。&quot;,
+&quot;label&quot;: 1
+},
+{
+&quot;text&quot;: &quot;老子晚年手植梧桐于濑乡，树皮天生裂纹似古篆「道」字。&quot;,
+&quot;label&quot;: 1
+},
+{
+&quot;text&quot;: &quot;老子幼时名耳，因耳垂过肩，乡老言其「具黄帝四目之相」。&quot;,
+&quot;label&quot;: 1
+}
+]</code></pre>
+
+
+
+<p>在LLM模型這種信息生成下，最終得到了一千餘條訓練數據（在一定數量之後同樣產生幻覺與内容重複），在通過這些數據的訓練之後，最終BERT模型準確率在多次測試中均達到0.9以上。</p>
+
+
+
+<p>由此可看出將不同工具進行結合使用有利於數字人文的研究與分析。</p>
+</article><p class="caption">遷移來源：<a href="https://dhchina.wordpress.com/2025/04/27/llm%e6%a8%a1%e5%9e%8b%e5%b0%8d%e8%a8%93%e7%b7%b4bert%e6%a8%a1%e5%9e%8b%e7%9a%84%e5%b9%ab%e5%8a%a9/">原 WordPress 頁面</a> · 原文最後更新：2025-05-06T07:41:51 UTC</p>

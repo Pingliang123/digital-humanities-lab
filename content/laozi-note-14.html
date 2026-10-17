@@ -1,0 +1,41 @@
+<div class="topline"><span>LAOZI</span><a href="projects.html#laozi">研究項目 ↗</a></div><header class="page-heading"><p class="eyebrow">老子其人 / 文本分類研究</p><h1>老子其人事跡——文本分類工具選擇</h1></header><nav class="research-nav" aria-label="老子研究章節"><a href="laozi-abstract.html">摘要</a><a href="laozi-dataset.html">數據集</a><a href="laozi-methods.html">分析方法</a><a href="laozi-results.html">分析結果</a><a href="laozi-limitations.html">研究限制</a></nav><article class="content research-article">
+<p>在歷代文獻中進行文本挖掘，隨之而來的問題自然而言是以何種方式進行挖掘，其中較爲適用的兩種方法是訓練BERT模型與通過API調用LLM模型對文本進行挖掘，筆者在對比兩者優缺點後，最終選擇訓練BERT模型進行分類，並通過DEEPSEEK模型進行訓練數據生成，下面展示對比情況。</p>
+
+
+
+<p>為對比兩種方法的準確程度，筆者構建了一個名爲“test_ai_bert.txt”的文件，包含三十個例子，其中含有五個老子其人的描述例文。</p>
+
+
+
+<div><a href="assets/laozi/30049b24c1c4f633.docx">test_ai_bert</a><a href="assets/laozi/30049b24c1c4f633.docx" download="">下载</a></div>
+
+
+
+<p>經過測試，三十個例子中DEEPSEEK模型兩次判斷的錯誤數量爲一至兩個，而BERT模型通過一千條左右的訓練數據，可以做到全對。</p>
+
+
+
+<p>在訓練過程中，BERT模型曾使用三百條的較小訓練數據集進行訓練，在之後測試中出現兩次錯誤，其中老子的相關的内容均被判斷正確，但關於張道陵和蚩尤的内容被誤判為老子其人的相關内容。但在擴充訓練數據之後，這種錯誤被解決。</p>
+
+
+
+<p>而在Deepseek的分類中，兩次分類中似乎都產生幻覺，如「浮屠老子流，营营盈市廛」一句被認爲是「文本中的『浮屠』指佛教，與老子無關。」最終對老子相關内容判斷錯誤，而對非老子相關内容全部判斷正確。由於LLM模型的黑箱特性，筆者尚未找到這種錯誤類型的解決方法。</p>
+
+
+
+<p>故在二者準確率相似的情況下，BERT模型對老子相關内容的判斷效果更好，故筆者選擇使用BERT模型進行篩選。</p>
+
+
+
+<p>以下為相關代碼：</p>
+
+
+
+<div>
+<div><a href="https://colab.research.google.com/drive/15oDbsygZezldZJP54Fv1cFHkS2iUo095?usp=sharing">AI分類代碼</a></div>
+
+
+
+<div><a href="https://www.kaggle.com/code/fengyu111/fengyu-bert-finetuning">BERT分類代碼</a></div>
+</div>
+</article><p class="caption">遷移來源：<a href="https://dhchina.wordpress.com/2025/05/06/%e8%80%81%e5%ad%90%e5%85%b6%e4%ba%ba%e4%ba%8b%e8%b7%a1-%e5%9f%ba%e6%96%bcbert%e7%9a%84%e6%96%87%e6%9c%ac%e5%88%86%e9%a1%9e%e6%8e%a2%e7%b4%a2/">原 WordPress 頁面</a> · 原文最後更新：2025-05-06T07:36:12 UTC</p>
